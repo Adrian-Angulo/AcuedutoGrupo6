@@ -10,6 +10,8 @@ export const getMatricula = async (cod) => {
   return await api.get(`/matriculas/${cod}`);
 };
 
+
+
 export const createMatricula = async (data) => {
   // TODO: Implementar POST para crear matrícula
   return await api.post("/matriculas", data);
