@@ -1,6 +1,7 @@
 import Buscador from '../components/ComponetesGrupo6/Buscador'
 import { useState, useEffect } from 'react';
 import { MapPin, Calendar, Home, Search } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { getMatriculas } from '../services/matriculasService'
 import CardMatricula from "../components/ComponetesGrupo6/CardMatriculas";
 export default function MatriculasPage() {
@@ -10,6 +11,7 @@ export default function MatriculasPage() {
 
   const [lista, setLista] = useState([]);
   const [busqueda, setBusqueda] = useState('');
+  const navigate = useNavigate();
 
 
 
@@ -89,7 +91,10 @@ export default function MatriculasPage() {
         ) : (
           listaFiltrada.map((m) =>
 
-            <div className="mb-4 bg-white-50 border border-blue-200 rounded-lg p-4 shadow-sm cursor-pointer hover:shadow-md transition">
+            <div 
+              key={m.cod_matricula}
+              onClick={() => navigate(`/matriculas/${m.cod_matricula}`)}
+              className="mb-4 bg-white-50 border border-blue-200 rounded-lg p-4 shadow-sm cursor-pointer hover:shadow-md transition">
 
               <div className="flex justify-between items-center mb-2">
                 <h2 className="text-lg font-semibold text-blue-900">{m.cod_matricula}</h2>

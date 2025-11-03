@@ -10,6 +10,7 @@ import PrediosPage from "./pages/PrediosPage";
 import UsuariosPage from "./pages/UsuariosPage";
 import PropietariosPage from "./pages/PropietariosPage";
 import MatriculasPage from "./pages/MatriculasPage";
+import DetalleMatriculaPage from "./pages/DetalleMatriculaPage";
 import MantenimientosPage from "./pages/MantenimientosPage";
 import SolicitudesPage from "./pages/SolicitudesPage";
 import FacturasPage from "./pages/FacturasPage";
@@ -44,6 +45,7 @@ function App() {
                       <Route path="/usuarios" element={<UsuariosPage />} />
                       <Route path="/propietarios" element={<PropietariosPage />} />
                       <Route path="/matriculas" element={<MatriculasPage />} />
+                      <Route path="/matriculas/:id" element={<DetalleMatriculaPage />} />
                       <Route path="/mantenimientos" element={<MantenimientosPage />} />
                       <Route path="/solicitudes" element={<SolicitudesPage />} />
                       <Route path="/facturas" element={<FacturasPage />} />
