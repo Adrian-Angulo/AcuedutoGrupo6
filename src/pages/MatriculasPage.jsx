@@ -1,7 +1,7 @@
 import Buscador from '../components/ComponetesGrupo6/Buscador'
 import { useState, useEffect } from 'react';
 import { MapPin, Calendar, Home, Search } from "lucide-react";
-import { getMatriculas, getMatricula, createMatricula, updateMatricula, deleteMatricula } from '../services/matriculasService'
+import { getMatriculas } from '../services/matriculasService'
 import CardMatricula from "../components/ComponetesGrupo6/CardMatriculas";
 export default function MatriculasPage() {
   // TODO: Cargar matrículas desde la API usando getMatriculas()
@@ -46,7 +46,7 @@ export default function MatriculasPage() {
       </div>
       <div>
 
-
+        {/* Compnente con campo de busqueda */}
         <div className="flex flex-row gap-2 w-full mb-4 ">
           <input
             type="text"
@@ -62,9 +62,19 @@ export default function MatriculasPage() {
             Buscar
           </button>
         </div>
-        
 
-        { listaFiltrada.length === 0 ? (
+        {busqueda != '' ? (
+          <div className='pb-2'>
+            <p className='text-gray-500'>Se encontraron <span className='text-black font-bold'> 2 </span> matricula(s)</p>
+          </div>
+        ) : (
+          <div className='pb-2'>
+            <p className='text-gray-500'> Existen <span className='text-black font-bold'> 2 </span> registros de matricula(s)</p>
+          </div>
+        )}
+
+
+        {listaFiltrada.length === 0 ? (
           <div className="bg-card rounded-2xl shadow-card p-12 text-center">
             <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
               <Home className="w-10 h-10 text-muted-foreground" />
@@ -77,38 +87,38 @@ export default function MatriculasPage() {
             </p>
           </div>
         ) : (
-           listaFiltrada.map((m) =>
-          
-          <div className="mb-4 bg-white-50 border border-blue-200 rounded-lg p-4 shadow-sm cursor-pointer hover:shadow-md transition">
-            
-            <div className="flex justify-between items-center mb-2">
-              <h2 className="text-lg font-semibold text-blue-900">{m.cod_matricula}</h2>
-              {m.estado == "Activa" ? <span className="bg-green-100 text-green-700 text-xs font-medium px-2 py-1 rounded-full">
-                {m.estado}
-              </span> : <span className="bg-red-100 text-red-700 text-xs font-medium px-2 py-1 rounded-full">
-                {m.estado}
-              </span>}
+          listaFiltrada.map((m) =>
 
+            <div className="mb-4 bg-white-50 border border-blue-200 rounded-lg p-4 shadow-sm cursor-pointer hover:shadow-md transition">
+
+              <div className="flex justify-between items-center mb-2">
+                <h2 className="text-lg font-semibold text-blue-900">{m.cod_matricula}</h2>
+                {m.estado == "Activa" ? <span className="bg-green-100 text-green-700 text-xs font-medium px-2 py-1 rounded-full">
+                  {m.estado}
+                </span> : <span className="bg-red-100 text-red-700 text-xs font-medium px-2 py-1 rounded-full">
+                  {m.estado}
+                </span>}
+
+              </div>
+
+              <div className="space-y-1 text-sm text-gray-700 mb-3">
+                <div className="flex items-center gap-2">
+                  <MapPin className='w-4 h-4 mt-0.5 flex-shrink-0 text-blue-600' />
+                  <span>{m.predio.direccion}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Calendar className='w-4 h-4 text-blue-600' />
+                  <span>Creada: {m.fecha}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Home className='w-4 h-4 text-blue-600' />
+                  <span>{m.predio.tipo}</span>
+                </div>
+              </div>
+
+              <p className="text-xs text-gray-500 font-medium">Toca para ver detalles completos</p>
             </div>
-
-            <div className="space-y-1 text-sm text-gray-700 mb-3">
-              <div className="flex items-center gap-2">
-                <MapPin className='w-4 h-4 mt-0.5 flex-shrink-0 text-blue-600' />
-                <span>{m.predio.direccion}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Calendar className='w-4 h-4 text-blue-600' />
-                <span>Creada: {m.fecha}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Home className='w-4 h-4 text-blue-600' />
-                <span>{m.predio.tipo}</span>
-              </div>
-            </div>
-
-            <p className="text-xs text-blue-600 font-medium">Toca para ver detalles completos</p>
-          </div>
-        )
+          )
 
         )}
 
