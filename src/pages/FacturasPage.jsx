@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { api } from '../services/api';
+import { Search } from "lucide-react";
 
 export default function FacturasPage() {
   const [facturas, setFacturas] = useState([]);
@@ -291,7 +292,18 @@ export default function FacturasPage() {
           Nueva Factura
         </button>
       </div>
-
+    <div>
+      
+       <div className="flex flex-row gap-2 w-full mb-4 ">
+          <input
+            type="text"
+            placeholder="Buscar por matricula"
+            
+            className="w-full h-12 px-4 text-sm text-gray-700 border border-blue-300 rounded-lg shadow-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+          />
+          
+        </div>
+    </div>
       {/* Filtros */}
       <div className="mb-6 bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
         <div className="flex gap-4 items-center flex-wrap">
