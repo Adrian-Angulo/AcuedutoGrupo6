@@ -54,13 +54,7 @@ export default function MatriculasPage() {
             onChange={(e) => setBusqueda(e.target.value)}
             className="w-full h-12 px-4 text-sm text-gray-700 border border-blue-300 rounded-lg shadow-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
           />
-          <button
 
-            className="flex items-center justify-center gap-2 px-4 h-12 text-white text-sm font-medium bg-gradient-to-r from-blue-600 to-cyan-500 rounded-lg shadow hover:opacity-90 transition"
-          >
-            <Search className="w-4 h-4" />
-            Buscar
-          </button>
         </div>
 
         {busqueda != '' ? (
