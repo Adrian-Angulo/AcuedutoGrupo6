@@ -11,14 +11,26 @@ export default function MatriculasPage() {
 
   const [lista, setLista] = useState([]);
   const [busqueda, setBusqueda] = useState('');
+  const [cargando, setCargando] = useState(true);
   const navigate = useNavigate();
 
 
 
   useEffect(() => {
     const cargar = async () => {
-      const datos = await getMatriculas();
-      setLista(datos);
+      try {
+        setCargando(true)
+        const datos = await getMatriculas();
+        setLista(datos || []);
+      } catch (error) {
+        console.log('Error al cargar matricuas: ', error);
+        
+      } finally{
+        setCargando(false)
+      }
+      
+      
+      
     };
     cargar();
   }, []);
@@ -46,6 +58,8 @@ export default function MatriculasPage() {
           Nueva Matrícula
         </button>
       </div>
+
+
       <div>
 
         {/* Compnente con campo de busqueda */}
@@ -64,69 +78,75 @@ export default function MatriculasPage() {
             Buscar
           </button>
         </div>
-
-        {busqueda != '' ? (
-          <div className='pb-2'>
-            <p className='text-gray-500'>Se encontraron <span className='text-black font-bold'> 2 </span> matricula(s)</p>
-          </div>
-        ) : (
-          <div className='pb-2'>
-            <p className='text-gray-500'> Existen <span className='text-black font-bold'> 2 </span> registros de matricula(s)</p>
-          </div>
-        )}
-
-
-        {listaFiltrada.length === 0 ? (
-          <div className="bg-card rounded-2xl shadow-card p-12 text-center">
-            <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
-              <Home className="w-10 h-10 text-muted-foreground" />
+        {
+          cargando ? (
+            <div className="p-6 bg-gray-50 min-h-screen flex items-center justify-center">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+                <p className="mt-4 text-gray-600">Cargando facturas...</p>
+              </div>
             </div>
-            <h2 className="text-2xl font-semibold text-foreground mb-2">
-              No se encontraron matrículas
-            </h2>
-            <p className="text-muted-foreground">
-              No hay matrículas asociadas a la cédula o número ingresado.
-            </p>
-          </div>
-        ) : (
-          listaFiltrada.map((m) =>
+          ) : 
+            listaFiltrada.length === 0 ? (
+              <div className="bg-card rounded-2xl shadow-card p-12 text-center">
+                <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Home className="w-10 h-10 text-muted-foreground" />
+                </div>
+                <h2 className="text-2xl font-semibold text-foreground mb-2">
+                  No se encontraron matrículas
+                </h2>
+                <p className="text-muted-foreground">
+                  No hay matrículas asociadas a la cédula o número ingresado.
+                </p>
+              </div>
+            ) : (
+              
+              listaFiltrada.map((m) =>
 
-            <div 
+                <div 
               key={m.cod_matricula}
               onClick={() => navigate(`/matriculas/${m.cod_matricula}`)}
               className="mb-4 bg-white-50 border border-blue-200 rounded-lg p-4 shadow-sm cursor-pointer hover:shadow-md transition">
 
-              <div className="flex justify-between items-center mb-2">
-                <h2 className="text-lg font-semibold text-blue-900">{m.cod_matricula}</h2>
-                {m.estado == "Activa" ? <span className="bg-green-100 text-green-700 text-xs font-medium px-2 py-1 rounded-full">
-                  {m.estado}
-                </span> : <span className="bg-red-100 text-red-700 text-xs font-medium px-2 py-1 rounded-full">
-                  {m.estado}
-                </span>}
+                  <div className="flex justify-between items-center mb-2">
+                    <h2 className="text-lg font-semibold text-blue-900">{m.cod_matricula}</h2>
+                    {m.estado == "Activa" ? <span className="bg-green-100 text-green-700 text-xs font-medium px-2 py-1 rounded-full">
+                      {m.estado}
+                    </span> : <span className="bg-red-100 text-red-700 text-xs font-medium px-2 py-1 rounded-full">
+                      {m.estado}
+                    </span>}
 
-              </div>
+                  </div>
 
-              <div className="space-y-1 text-sm text-gray-700 mb-3">
-                <div className="flex items-center gap-2">
-                  <MapPin className='w-4 h-4 mt-0.5 flex-shrink-0 text-blue-600' />
-                  <span>{m.predio.direccion}</span>
+                  <div className="space-y-1 text-sm text-gray-700 mb-3">
+                    <div className="flex items-center gap-2">
+                      <MapPin className='w-4 h-4 mt-0.5 flex-shrink-0 text-blue-600' />
+                      <span>{m.predio.direccion}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Calendar className='w-4 h-4 text-blue-600' />
+                      <span>Creada: {m.fecha}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Home className='w-4 h-4 text-blue-600' />
+                      <span>{m.predio.tipo}</span>
+                    </div>
+                  </div>
+
+                  <p className="text-xs text-gray-500 font-medium">Toca para ver detalles completos</p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Calendar className='w-4 h-4 text-blue-600' />
-                  <span>Creada: {m.fecha}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Home className='w-4 h-4 text-blue-600' />
-                  <span>{m.predio.tipo}</span>
-                </div>
-              </div>
+              )
 
-              <p className="text-xs text-gray-500 font-medium">Toca para ver detalles completos</p>
-            </div>
-          )
+            )
+          
 
-        )}
+        }
 
+
+       
+
+
+      
 
 
       </div>

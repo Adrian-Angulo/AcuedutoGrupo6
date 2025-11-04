@@ -12,9 +12,6 @@ const Buscador = () => {
                 />
                 <Button/>
             </div>
-
-           
-            
         </>
 
     );
