@@ -10,7 +10,7 @@ const Buscador = () => {
                 
                     className="w-full h-12 px-4 text-sm text-gray-700 border border-blue-300 rounded-lg shadow-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                 />
-                <Button/>
+                
             </div>
         </>
 
