@@ -24,13 +24,9 @@ export default function MatriculasPage() {
         setLista(datos || []);
       } catch (error) {
         console.log('Error al cargar matricuas: ', error);
-        
       } finally{
         setCargando(false)
       }
-      
-      
-      
     };
     cargar();
   }, []);

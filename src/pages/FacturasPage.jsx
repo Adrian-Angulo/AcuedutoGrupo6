@@ -14,6 +14,7 @@ export default function FacturasPage() {
   const [facturaSeleccionada, setFacturaSeleccionada] = useState(null);
   const [guardando, setGuardando] = useState(false);
   const [matriculas, setMatriculas] = useState([]);
+  const [busqueda, setBusqueda] = useState('');
 
   // Formulario de nueva factura individual
   const [formNueva, setFormNueva] = useState({
@@ -57,6 +58,15 @@ export default function FacturasPage() {
       // No mostramos error al usuario, es un proceso en segundo plano
     }
   };
+
+  const listaBusqueda = facturas.filter((f) => {
+    const termino = busqueda.toLowerCase().trim();
+    if (!termino) return facturas; // Si no hay búsqueda, mostrar todo
+
+    return (
+      f.cod_matricula.toLowerCase().includes(termino) || (f.matricula.predio?.propietario.cc && f.matricula.predio.propietario.cc.toLowerCase().includes(termino))
+    );
+  });
 
   const actualizarMoraLocal = () => {
     // Función temporal que actualiza el estado en el cliente
@@ -292,7 +302,7 @@ export default function FacturasPage() {
           Nueva Factura
         </button>
       </div>
- 
+
       {/* Filtros */}
       <div className="mb-6 bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
         <div className="flex gap-4 items-center flex-wrap">
@@ -327,13 +337,16 @@ export default function FacturasPage() {
           </button>
 
           <div className='flex w-1/3 ml-auto h-12  text-sm text-gray-700 border border-blue-300 rounded-lg shadow-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition'>
-            <button
-              className="hover:bg-blue-50 cursor-pointer  text-blue-700 px-3 py-3 rounded text-sm transition"
-              onClick={() => { }}> <Search />
-            </button>
+            <div
+              className=" text-blue-700 px-3 py-3 rounded text-sm transition"
+              
+             > 
+             <Search />
+            </div>
             <input
-            className='w-full pl-2 h-12 text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none  transition'
+              className='w-full pl-2 h-12 text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none  transition'
               type="text"
+              onChange={(e) => setBusqueda(e.target.value)}
               placeholder="Buscar Ej. M001"
 
             />
@@ -349,107 +362,123 @@ export default function FacturasPage() {
           {error}
         </div>
       )}
-
+      {busqueda == '' ? 
+      <h3 className='mb-1 text-gray-400'>Existen <span className='text-black font-bold'>{facturas.length}</span> Factura(s)</h3> 
+      :
+      <h3 className='mb-1 text-gray-400'>Existen <span className='text-black font-bold'>{listaBusqueda.length}</span> Factura(s) para {busqueda}</h3> 
+      }
+      
       {/* Tabla de facturas */}
       <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
-        {facturas.length === 0 ? (
-          <div className="p-8 text-center text-gray-500">
-            No hay facturas registradas
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Matrícula</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Periodo</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                    <button
-                      onClick={cambiarOrdenFecha}
-                      className="flex items-center gap-1 hover:text-blue-600 transition"
-                      title={ordenFecha === 'desc' ? 'Click para ordenar: más antigua primero' : 'Click para ordenar: más reciente primero'}
-                    >
-                      Fecha Emisión
-                      <span className="text-base">
-                        {ordenFecha === 'desc' ? '↓' : '↑'}
-                      </span>
-                    </button>
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Vencimiento</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Valor</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {facturas.map((factura) => (
-                  <tr key={factura.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 text-sm text-gray-900">{factura.id}</td>
-                    <td className="px-4 py-3 text-sm font-medium text-blue-600">
-                      {factura.cod_matricula}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-700">
-                      {factura.periodo_facturacion || '-'}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-700">
-                      {formatearFecha(factura.fecha_creacion)}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-700">
-                      {formatearFecha(factura.fecha_vencimiento)}
-                    </td>
-                    <td className="px-4 py-3 text-sm font-semibold text-gray-900">
-                      {formatearMoneda(factura.valor)}
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className={`px-2 py-1 text-xs font-medium rounded ${obtenerColorEstado(factura.estado)}`}>
-                        {factura.estado}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-sm">
-                      <div className="flex gap-2">
+        {
+
+          facturas.length === 0 ? (
+            <div className="p-8 text-center text-gray-500">
+              No hay facturas registradas
+            </div>
+          ) : (
+            listaBusqueda.length === 0 ?
+              <div className="p-8 text-center text-gray-500">
+                No se encontraron facutras para {busqueda}
+              </div> :
+
+              <div className="overflow-x-auto">
+
+                <table className="w-full">
+                  <thead className="bg-gray-50 border-b border-gray-200">
+                    <tr>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Matrícula</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Periodo</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                         <button
-                          onClick={() => verDetalleFactura(factura.id)}
-                          className="text-blue-600 hover:text-blue-800 font-medium"
-                          title="Ver detalle"
+                          onClick={cambiarOrdenFecha}
+                          className="flex items-center gap-1 hover:text-blue-600 transition"
+                          title={ordenFecha === 'desc' ? 'Click para ordenar: más antigua primero' : 'Click para ordenar: más reciente primero'}
                         >
-                          👁️
+                          Fecha Emisión
+                          <span className="text-base">
+                            {ordenFecha === 'desc' ? '↓' : '↑'}
+                          </span>
                         </button>
-                        {(factura.estado === 'Pendiente' || factura.estado === 'Vencida' || factura.estado === 'en_mora') && (
-                          <button
-                            onClick={() => abrirModalPago(factura)}
-                            className="text-green-600 hover:text-green-800 font-medium"
-                            title="Registrar pago"
-                          >
-                            💰
-                          </button>
-                        )}
-                        <button
-                          onClick={() => verFacturasPorMatricula(factura.cod_matricula)}
-                          className="text-purple-600 hover:text-purple-800 font-medium"
-                          title="Ver todas las facturas de esta matrícula"
-                        >
-                          📋
-                        </button>
-                        {factura.url && (
-                          <a
-                            href={factura.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-orange-600 hover:text-orange-800"
-                            title="Ver PDF"
-                          >
-                            📄
-                          </a>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Vencimiento</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Valor</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {
+                     
+                        listaBusqueda.map((factura) => (
+
+                          <tr key={factura.id} className="hover:bg-gray-50">
+                            <td className="px-4 py-3 text-sm text-gray-900">{factura.id}</td>
+                            <td className="px-4 py-3 text-sm font-medium text-blue-600">
+                              {factura.cod_matricula}
+                            </td>
+                            <td className="px-4 py-3 text-sm text-gray-700">
+                              {factura.periodo_facturacion || '-'}
+                            </td>
+                            <td className="px-4 py-3 text-sm text-gray-700">
+                              {formatearFecha(factura.fecha_creacion)}
+                            </td>
+                            <td className="px-4 py-3 text-sm text-gray-700">
+                              {formatearFecha(factura.fecha_vencimiento)}
+                            </td>
+                            <td className="px-4 py-3 text-sm font-semibold text-gray-900">
+                              {formatearMoneda(factura.valor)}
+                            </td>
+                            <td className="px-4 py-3">
+                              <span className={`px-2 py-1 text-xs font-medium rounded ${obtenerColorEstado(factura.estado)}`}>
+                                {factura.estado}
+                              </span>
+                            </td>
+                            <td className="px-4 py-3 text-sm">
+                              <div className="flex gap-2">
+                                <button
+                                  onClick={() => verDetalleFactura(factura.id)}
+                                  className="text-blue-600 hover:text-blue-800 font-medium"
+                                  title="Ver detalle"
+                                >
+                                  👁️
+                                </button>
+                                {(factura.estado === 'Pendiente' || factura.estado === 'Vencida' || factura.estado === 'en_mora') && (
+                                  <button
+                                    onClick={() => abrirModalPago(factura)}
+                                    className="text-green-600 hover:text-green-800 font-medium"
+                                    title="Registrar pago"
+                                  >
+                                    💰
+                                  </button>
+                                )}
+                                <button
+                                  onClick={() => verFacturasPorMatricula(factura.cod_matricula)}
+                                  className="text-purple-600 hover:text-purple-800 font-medium"
+                                  title="Ver todas las facturas de esta matrícula"
+                                >
+                                  📋
+                                </button>
+                                {factura.url && (
+                                  <a
+                                    href={factura.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-orange-600 hover:text-orange-800"
+                                    title="Ver PDF"
+                                  >
+                                    📄
+                                  </a>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                  </tbody>
+                </table>
+              </div>
+          )}
       </div>
 
       {/* Modal Detalle de Factura */}
