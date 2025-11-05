@@ -385,18 +385,18 @@ export default function SolicitudesPage() {
             <h2 className="text-xl font-bold text-white">Solicitudes Creadas</h2>
             <p className="text-green-100 text-sm mt-1">Historial de solicitudes de mantenimiento</p>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full">
+          <div className="overflow-hidden">
+            <table className="w-full table-fixed">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Código</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Propietario</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Predio</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Tipo</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Observaciones</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Prioridad</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Estado</th>
-                  <th className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Acciones</th>
+                  <th className="w-16 px-3 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Código</th>
+                  <th className="w-32 px-3 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Propietario</th>
+                  <th className="w-28 px-3 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Predio</th>
+                  <th className="w-32 px-3 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Tipo</th>
+                  <th className="px-3 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Observaciones</th>
+                  <th className="w-24 px-3 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Prioridad</th>
+                  <th className="w-24 px-3 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Estado</th>
+                  <th className="w-20 px-3 py-4 text-center text-xs font-semibold text-gray-600 uppercase">Acciones</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
@@ -418,33 +418,33 @@ export default function SolicitudesPage() {
                   filteredSolicitudes.map((s) => {
                     const propietario = s.predio?.propietario;
                     return (
-                      <tr key={`solicitud-${s.id}`} className="hover:bg-green-50 transition-colors">
-                        <td className="px-6 py-4">
-                          <span className="text-sm font-semibold text-gray-900">#{s.id}</span>
+                      <tr key={`solicitud-${s.id}`} className="hover:bg-green-50 transition-colors border-b border-gray-100">
+                        <td className="px-3 py-3">
+                          <span className="text-xs font-semibold text-gray-900">#{s.id}</span>
                         </td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center">
-                            <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center mr-2">
+                        <td className="px-3 py-3">
+                          <div className="flex items-center gap-2">
+                            <div className="w-7 h-7 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
                               <span className="text-green-600 font-semibold text-xs">
                                 {propietario ? `${propietario.nombre[0]}${propietario.apellido[0]}` : "?"}
                               </span>
                             </div>
-                            <span className="text-sm text-gray-900">
+                            <span className="text-xs text-gray-900 truncate">
                               {propietario ? `${propietario.nombre} ${propietario.apellido}` : "N/A"}
                             </span>
                           </div>
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-700">
+                        <td className="px-3 py-3 text-xs text-gray-700 truncate">
                           {s.predio?.direccion || "N/A"}
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-700">
+                        <td className="px-3 py-3 text-xs text-gray-700 truncate">
                           {mantenimientos.find(m => m.id === s.id_mantenimiento)?.nombre || "N/A"}
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-600 max-w-xs truncate">
+                        <td className="px-3 py-3 text-xs text-gray-600 truncate">
                           {s.observaciones || "-"}
                         </td>
-                        <td className="px-6 py-4">
-                          <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                        <td className="px-3 py-3">
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap ${
                             s.prioridad === 'Urgente' ? 'bg-red-100 text-red-700' :
                             s.prioridad === 'Alta' ? 'bg-orange-100 text-orange-700' :
                             s.prioridad === 'Media' ? 'bg-blue-100 text-blue-700' :
@@ -453,8 +453,8 @@ export default function SolicitudesPage() {
                             {s.prioridad || 'Media'}
                           </span>
                         </td>
-                        <td className="px-6 py-4">
-                          <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                        <td className="px-3 py-3">
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap ${
                             s.estado === 'Completado' ? 'bg-green-100 text-green-700' :
                             s.estado === 'En Proceso' ? 'bg-blue-100 text-blue-700' :
                             s.estado === 'Cancelado' ? 'bg-red-100 text-red-700' :
@@ -463,13 +463,13 @@ export default function SolicitudesPage() {
                             {s.estado || 'Pendiente'}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-center">
+                        <td className="px-3 py-3 text-center">
                           <button
                             onClick={() => handleDelete(s.id)}
-                            className="p-2 text-red-600 hover:text-white hover:bg-red-600 rounded-lg transition-all"
+                            className="p-1.5 text-red-600 hover:text-white hover:bg-red-600 rounded-lg transition-all"
                             title="Eliminar"
                           >
-                            <Trash2 size={18} strokeWidth={2} />
+                            <Trash2 size={16} strokeWidth={2} />
                           </button>
                         </td>
                       </tr>
