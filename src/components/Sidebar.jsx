@@ -18,6 +18,7 @@ const menuSections = [
     items: [
       { path: "/mantenimientos", label: "Tipos", icon: "🔧" },
       { path: "/solicitudes", label: "Solicitudes", icon: "📝" },
+      { path: "/reportes", label: "Reportes", icon: "📊" },
     ],
   },
   {
