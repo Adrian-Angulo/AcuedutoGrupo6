@@ -33,6 +33,7 @@ export default function SolicitudesPage() {
   const [showMatriculaDropdown, setShowMatriculaDropdown] = useState(false);
   const [searchMatricula, setSearchMatricula] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [activeTab, setActiveTab] = useState("propietarios");
   const dropdownRefPredio = useRef(null);
   const dropdownRefMatricula = useRef(null);
 
@@ -269,6 +270,217 @@ export default function SolicitudesPage() {
             />
           </div>
         </div>
+
+        {/* Pestañas principales */}
+        <div className="bg-white rounded-t-xl shadow-lg border border-gray-200 border-b-0">
+          <div className="flex border-b border-gray-200">
+            <button
+              onClick={() => setActiveTab("propietarios")}
+              className={`flex items-center gap-2 px-6 py-4 font-semibold text-sm transition-all ${
+                activeTab === "propietarios"
+                  ? "text-blue-600 border-b-2 border-blue-600 bg-white"
+                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+              }`}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              Propietarios y Predios
+            </button>
+            <button
+              onClick={() => setActiveTab("solicitudes")}
+              className={`flex items-center gap-2 px-6 py-4 font-semibold text-sm transition-all ${
+                activeTab === "solicitudes"
+                  ? "text-green-600 border-b-2 border-green-600 bg-white"
+                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+              }`}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Solicitudes Creadas ({filteredSolicitudes.length})
+            </button>
+          </div>
+        </div>
+
+        {/* Sección 1: Propietarios con sus predios */}
+        {activeTab === "propietarios" && (
+        <div className="bg-white rounded-b-xl shadow-lg overflow-hidden border border-gray-200 border-t-0">
+          <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
+            <h2 className="text-xl font-bold text-white">Propietarios y Predios</h2>
+            <p className="text-blue-100 text-sm mt-1">Selecciona un propietario para crear una solicitud</p>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Propietario</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Cédula</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Predio</th>
+                  <th className="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Acciones</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {filteredSolicitudes.length === 0 ? (
+                  <tr>
+                    <td colSpan="4" className="px-6 py-12 text-center">
+                      <div className="flex flex-col items-center justify-center text-gray-500">
+                        <Search size={48} className="mb-3 text-gray-300" />
+                        <p className="text-lg font-medium">
+                          {searchTerm ? "No se encontraron propietarios" : "No hay propietarios registrados"}
+                        </p>
+                        <p className="text-sm text-gray-400 mt-1">
+                          {searchTerm ? "Intenta con otros términos de búsqueda" : "Agrega propietarios para comenzar"}
+                        </p>
+                      </div>
+                    </td>
+                  </tr>
+                ) : (
+                  filteredSolicitudes.map((s) => {
+                    const propietario = s.predio?.propietario;
+                    return (
+                      <tr key={s.id} className="hover:bg-blue-50 transition-colors">
+                        <td className="px-6 py-4">
+                          <div className="flex items-center">
+                            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                              <span className="text-blue-600 font-semibold text-sm">
+                                {propietario ? `${propietario.nombre[0]}${propietario.apellido[0]}` : "?"}
+                              </span>
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">
+                                {propietario ? `${propietario.nombre} ${propietario.apellido}` : "N/A"}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-700">
+                          {propietario?.cc || "N/A"}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-700">
+                          {s.predio?.direccion || "N/A"}
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <button
+                            onClick={() => handleOpenFormWithPropietario(propietario?.cc)}
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition text-sm font-medium shadow-sm hover:shadow-md"
+                          >
+                            Crear Solicitud
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        )}
+
+        {/* Sección 2: Solicitudes creadas */}
+        {activeTab === "solicitudes" && (
+        <div className="bg-white rounded-b-xl shadow-lg overflow-hidden border border-gray-200 border-t-0">
+          <div className="bg-gradient-to-r from-green-600 to-green-700 px-6 py-4">
+            <h2 className="text-xl font-bold text-white">Solicitudes Creadas</h2>
+            <p className="text-green-100 text-sm mt-1">Historial de solicitudes de mantenimiento</p>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Código</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Propietario</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Predio</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Tipo</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Observaciones</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Prioridad</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Estado</th>
+                  <th className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Acciones</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {filteredSolicitudes.length === 0 ? (
+                  <tr>
+                    <td colSpan="8" className="px-6 py-12 text-center">
+                      <div className="flex flex-col items-center justify-center text-gray-500">
+                        <Search size={48} className="mb-3 text-gray-300" />
+                        <p className="text-lg font-medium">
+                          {searchTerm ? "No se encontraron solicitudes" : "No hay solicitudes creadas"}
+                        </p>
+                        <p className="text-sm text-gray-400 mt-1">
+                          {searchTerm ? "Intenta con otros términos de búsqueda" : "Crea tu primera solicitud desde la pestaña de Propietarios"}
+                        </p>
+                      </div>
+                    </td>
+                  </tr>
+                ) : (
+                  filteredSolicitudes.map((s) => {
+                    const propietario = s.predio?.propietario;
+                    return (
+                      <tr key={`solicitud-${s.id}`} className="hover:bg-green-50 transition-colors">
+                        <td className="px-6 py-4">
+                          <span className="text-sm font-semibold text-gray-900">#{s.id}</span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center">
+                            <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center mr-2">
+                              <span className="text-green-600 font-semibold text-xs">
+                                {propietario ? `${propietario.nombre[0]}${propietario.apellido[0]}` : "?"}
+                              </span>
+                            </div>
+                            <span className="text-sm text-gray-900">
+                              {propietario ? `${propietario.nombre} ${propietario.apellido}` : "N/A"}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-700">
+                          {s.predio?.direccion || "N/A"}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-700">
+                          {mantenimientos.find(m => m.id === s.id_mantenimiento)?.nombre || "N/A"}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-600 max-w-xs truncate">
+                          {s.observaciones || "-"}
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                            s.prioridad === 'Urgente' ? 'bg-red-100 text-red-700' :
+                            s.prioridad === 'Alta' ? 'bg-orange-100 text-orange-700' :
+                            s.prioridad === 'Media' ? 'bg-blue-100 text-blue-700' :
+                            'bg-gray-100 text-gray-700'
+                          }`}>
+                            {s.prioridad || 'Media'}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                            s.estado === 'Completado' ? 'bg-green-100 text-green-700' :
+                            s.estado === 'En Proceso' ? 'bg-blue-100 text-blue-700' :
+                            s.estado === 'Cancelado' ? 'bg-red-100 text-red-700' :
+                            'bg-yellow-100 text-yellow-700'
+                          }`}>
+                            {s.estado || 'Pendiente'}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <button
+                            onClick={() => handleDelete(s.id)}
+                            className="p-2 text-red-600 hover:text-white hover:bg-red-600 rounded-lg transition-all"
+                            title="Eliminar"
+                          >
+                            <Trash2 size={18} strokeWidth={2} />
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        )}
 
       {showForm && (
         <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
@@ -541,181 +753,6 @@ export default function SolicitudesPage() {
           </div>
         </div>
       )}
-
-        {/* Sección 1: Propietarios con sus predios */}
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-8 border border-gray-200">
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
-            <h2 className="text-xl font-bold text-white">Propietarios y Predios</h2>
-            <p className="text-blue-100 text-sm mt-1">Selecciona un propietario para crear una solicitud</p>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Propietario</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Cédula</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Predio</th>
-                  <th className="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Acciones</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {filteredSolicitudes.length === 0 ? (
-                  <tr>
-                    <td colSpan="4" className="px-6 py-12 text-center">
-                      <div className="flex flex-col items-center justify-center text-gray-500">
-                        <Search size={48} className="mb-3 text-gray-300" />
-                        <p className="text-lg font-medium">
-                          {searchTerm ? "No se encontraron propietarios" : "No hay propietarios registrados"}
-                        </p>
-                        <p className="text-sm text-gray-400 mt-1">
-                          {searchTerm ? "Intenta con otros términos de búsqueda" : "Agrega propietarios para comenzar"}
-                        </p>
-                      </div>
-                    </td>
-                  </tr>
-                ) : (
-                  filteredSolicitudes.map((s) => {
-                    const propietario = s.predio?.propietario;
-                    return (
-                      <tr key={s.id} className="hover:bg-blue-50 transition-colors">
-                        <td className="px-6 py-4">
-                          <div className="flex items-center">
-                            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
-                              <span className="text-blue-600 font-semibold text-sm">
-                                {propietario ? `${propietario.nombre[0]}${propietario.apellido[0]}` : "?"}
-                              </span>
-                            </div>
-                            <div>
-                              <p className="text-sm font-medium text-gray-900">
-                                {propietario ? `${propietario.nombre} ${propietario.apellido}` : "N/A"}
-                              </p>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-700">
-                          {propietario?.cc || "N/A"}
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-700">
-                          {s.predio?.direccion || "N/A"}
-                        </td>
-                        <td className="px-6 py-4 text-right">
-                          <button
-                            onClick={() => handleOpenFormWithPropietario(propietario?.cc)}
-                            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition text-sm font-medium shadow-sm hover:shadow-md"
-                          >
-                            Crear Solicitud
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* Sección 2: Solicitudes creadas */}
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
-          <div className="bg-gradient-to-r from-green-600 to-green-700 px-6 py-4">
-            <h2 className="text-xl font-bold text-white">Solicitudes Creadas</h2>
-            <p className="text-green-100 text-sm mt-1">Historial de solicitudes de mantenimiento</p>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Código</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Propietario</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Predio</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Tipo</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Observaciones</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Prioridad</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Estado</th>
-                  <th className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Acciones</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {filteredSolicitudes.length === 0 ? (
-                  <tr>
-                    <td colSpan="8" className="px-6 py-12 text-center">
-                      <div className="flex flex-col items-center justify-center text-gray-500">
-                        <Search size={48} className="mb-3 text-gray-300" />
-                        <p className="text-lg font-medium">
-                          {searchTerm ? "No se encontraron solicitudes" : "No hay solicitudes creadas"}
-                        </p>
-                        <p className="text-sm text-gray-400 mt-1">
-                          {searchTerm ? "Intenta con otros términos de búsqueda" : "Crea tu primera solicitud desde la sección superior"}
-                        </p>
-                      </div>
-                    </td>
-                  </tr>
-                ) : (
-                  filteredSolicitudes.map((s) => {
-                    const propietario = s.predio?.propietario;
-                    return (
-                      <tr key={`solicitud-${s.id}`} className="hover:bg-green-50 transition-colors">
-                        <td className="px-6 py-4">
-                          <span className="text-sm font-semibold text-gray-900">#{s.id}</span>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center">
-                            <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center mr-2">
-                              <span className="text-green-600 font-semibold text-xs">
-                                {propietario ? `${propietario.nombre[0]}${propietario.apellido[0]}` : "?"}
-                              </span>
-                            </div>
-                            <span className="text-sm text-gray-900">
-                              {propietario ? `${propietario.nombre} ${propietario.apellido}` : "N/A"}
-                            </span>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-700">
-                          {s.predio?.direccion || "N/A"}
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-700">
-                          {mantenimientos.find(m => m.id === s.id_mantenimiento)?.nombre || "N/A"}
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-600 max-w-xs truncate">
-                          {s.observaciones || "-"}
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
-                            s.prioridad === 'Urgente' ? 'bg-red-100 text-red-700' :
-                            s.prioridad === 'Alta' ? 'bg-orange-100 text-orange-700' :
-                            s.prioridad === 'Media' ? 'bg-blue-100 text-blue-700' :
-                            'bg-gray-100 text-gray-700'
-                          }`}>
-                            {s.prioridad || 'Media'}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
-                            s.estado === 'Completado' ? 'bg-green-100 text-green-700' :
-                            s.estado === 'En Proceso' ? 'bg-blue-100 text-blue-700' :
-                            s.estado === 'Cancelado' ? 'bg-red-100 text-red-700' :
-                            'bg-yellow-100 text-yellow-700'
-                          }`}>
-                            {s.estado || 'Pendiente'}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 text-center">
-                          <button
-                            onClick={() => handleDelete(s.id)}
-                            className="p-2 text-red-600 hover:text-white hover:bg-red-600 rounded-lg transition-all"
-                            title="Eliminar"
-                          >
-                            <Trash2 size={18} strokeWidth={2} />
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
       </div>
     </div>
   );
