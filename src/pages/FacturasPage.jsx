@@ -64,7 +64,7 @@ export default function FacturasPage() {
     if (!termino) return facturas; // Si no hay búsqueda, mostrar todo
 
     return (
-      f.cod_matricula.toLowerCase().includes(termino) || (f.matricula.predio?.propietario.cc && f.matricula.predio.propietario.cc.toLowerCase().includes(termino))
+      f.cod_matricula.toLowerCase().includes(termino) 
     );
   });
 
