@@ -1,41 +1,67 @@
+import { getEstadoColor } from '../components/ComponetesGrupo6/lib/formatters';
 
-export default function Table() {
+export default function Table({ matriculas = [] }) {
+    let i = 1;
     return (
-        <div class=" bg-gray-50 flex items-center ">
-            <div class="w-full  bg-white shadow-lg rounded-2xl overflow-hidden">
-
-                <div class="overflow-x-auto">
+        <div className="bg-gray-50 flex items-center justify-center">
+            <div className="w-full bg-white shadow-lg rounded-2xl overflow-hidden">
+                <div className="overflow-x-auto">
                     <table className="w-full">
-                        <thead className="bg-gray-50 border-b border-gray-200">
+                        <thead className="bg-gray-100 border-b border-gray-200">
                             <tr>
-                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Codigo Matricula</th>
-                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Propietario</th>
-                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Direccion</th>
-                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
-                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
-
+                                {["ID","CODIGO MATRICULA","CEDULA", "PROPIETARIO",  "PREDIO", "ESTADO", "ACCIONES"].map((title) => (
+                                    <th
+                                        key={title}
+                                        className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                                    >
+                                        {title}
+                                    </th>
+                                ))}
                             </tr>
                         </thead>
+
                         <tbody className="divide-y divide-gray-200">
-                            
-                            <tr key="" className="hover:bg-gray-50">
-                                <td className="px-4 py-3 text-sm text-blue-600">MAT-2025-0001</td>
-                                <td className="px-4 py-3 text-sm font-medium text-black">
-                                    1080831081
-                                </td>
-                                <td className="px-4 py-3 text-sm text-gray-700">
-                                    Calle 123 #45-67
-                                </td>
-                                <td className="px-4 py-3 text-sm text-gray-700">
-                                    Activa
-                                </td>
-                                <td className="px-4 py-3 text-sm text-gray-700">
-                                    <button>X</button>
-                                </td>
-
-                            </tr>
-
-
+                            {
+                            matriculas.length > 0 ? (
+                                matriculas.map((matricula) => (
+                                    <tr key={matricula.cod_matricula} className="hover:bg-gray-50 transition-colors">
+                                        <td className="px-4 py-3 text-sm  font-medium">
+                                            {i++}
+                                        </td>
+                                        <td className="px-4 py-3 text-sm text-blue-600 font-medium">
+                                            {matricula.cod_matricula}
+                                        </td>
+                                        <td className="px-4 py-3 text-sm text-gray-800">
+                                            {matricula.predio?.propietario?.nombre +" "+ matricula.predio?.propietario?.apellido || "Sin datos"}
+                                        </td>
+                                        <td className="px-4 py-3 text-sm text-gray-800">
+                                            {matricula.predio?.propietario?.cc || "Sin datos"}
+                                        </td>
+                                        <td className="px-4 py-3 text-sm text-gray-700">
+                                            {matricula.predio?.direccion || "No registrada"}
+                                        </td>
+                                        <td
+                                            className="px-4 py-3"
+                                        >
+                                            <span className={`px-2 py-1 text-xs font-medium rounded ${getEstadoColor(matricula.estado)}`}>
+                                                 {matricula.estado}
+                                            </span>
+                                           
+                                        </td>
+                                        <td className="px-4 py-3 text-sm">
+                                            <button className="text-blue-600 rounded  font-semibold bg-blue-200  hover:bg-blue-300 px-3 py-1">
+                                                Ver Detalles
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="5" className="px-4 py-6 text-center text-sm text-gray-500">
+                                        No hay matrículas disponibles.
+                                    </td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                 </div>
