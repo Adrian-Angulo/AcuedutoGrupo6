@@ -29,3 +29,12 @@ export const getEstadoColor = (estado) => {
       return '';
   }
 };
+
+export const listaFiltrada = (criterio, listaMatriculas) =>
+     listaMatriculas.filter((matricula) =>
+    matricula.cod_matricula.toLowerCase().includes(criterio.toLowerCase()) ||
+    matricula.predio?.propietario?.cc.toLowerCase().includes(criterio.toLowerCase())
+  );
+
+
+

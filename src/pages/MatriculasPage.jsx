@@ -6,6 +6,7 @@ import Table from '../components/Table';
 
 import { useState, useEffect } from 'react';
 import { getMatriculas } from '../services/matriculasService';
+import { listaFiltrada } from '../components/ComponetesGrupo6/lib/formatters';
 
 
 
@@ -13,26 +14,26 @@ export default function MatriculasPage() {
 
   const [listaMatriculas, setMatriculas] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [criterio, setCriterio] = useState('');
 
+  const cargar = async () => {
+    try {
+      setLoading(true)
+      const datos = await getMatriculas();
+      setMatriculas(datos || []);
+    } catch (error) {
+      console.log('Error al cargar matricuas: ', error);
+    } finally {
+      setLoading(false)
+    }
+  };
 
-
-
+  
   useEffect(() => {
-    const cargar = async () => {
-      try {
-        setLoading(true)
-        const datos = await getMatriculas();
-        setMatriculas(datos || []);
-      } catch (error) {
-        console.log('Error al cargar matricuas: ', error);
-      } finally {
-        setLoading(false)
-      }
-    };
     cargar();
   }, []);
 
-  
+
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -45,7 +46,7 @@ export default function MatriculasPage() {
           <option value="cancelada">Cancelada</option>
           <option value="en_mora">En mora</option>
         </Select>
-        <Buscador placeholder="Buscar matrícula..." />
+        <Buscador placeholder="Buscar matrícula..." onChange={(e) => setCriterio(e.target.value)} />
       </Card>
 
       {loading ? (
@@ -56,7 +57,7 @@ export default function MatriculasPage() {
           </div>
         </div>
       ) : (
-        <Table matriculas={listaMatriculas} />
+        <Table matriculas={listaFiltrada(criterio, listaMatriculas)} />
       )}
 
 
