@@ -9,14 +9,14 @@ import {
   ModalHeader,
 } from "flowbite-react";
 
-const ModalComponent = ({openModal, setOpenModal}) => {
+const ModalComponent = ({openModal, setOpenModal, matricula}) => {
  
 
   return (
     <>
       
       <Modal show={openModal} onClose={() => setOpenModal(false)}>
-        <ModalHeader>matricula</ModalHeader>
+        <ModalHeader>{matricula.cod_matricula}</ModalHeader>
         <ModalBody>
           <div className="space-y-6">
             <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">

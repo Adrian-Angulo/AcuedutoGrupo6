@@ -20,7 +20,7 @@ export default function MatriculasPage() {
   const [criterio, setCriterio] = useState('');
   const [error, setError] = useState('');
   const [openModal, setOpenModal] = useState(false);
-  
+  const [seledtMatricula, setseledtMatricula] = useState({});
 
   const cargar = async () => {
     try {
@@ -79,8 +79,8 @@ export default function MatriculasPage() {
         </div>
       )}
 
-      {!loading && !error && ( <Table matriculas={listaFiltrada(criterio, listaMatriculas)}  setOpenModal={setOpenModal}  />)}
-      <ModalComponent openModal={openModal} setOpenModal={setOpenModal} />
+      {!loading && !error && ( <Table matriculas={listaFiltrada(criterio, listaMatriculas)}  setOpenModal={setOpenModal} setseledtMatricula={setseledtMatricula}  />)}
+      <ModalComponent openModal={openModal} setOpenModal={setOpenModal} matricula={seledtMatricula}/>
     </div>
   );
 }

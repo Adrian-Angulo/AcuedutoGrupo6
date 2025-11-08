@@ -2,7 +2,7 @@ import { getEstadoColor } from '../components/ComponetesGrupo6/lib/formatters';
 import ModalComponent from './ModalComponent';
 
 
-export default function Table({ matriculas = [], setOpenModal}) {
+export default function Table({ matriculas = [], setOpenModal, setseledtMatricula}) {
 
     let i = 1;
     return (
@@ -53,7 +53,10 @@ export default function Table({ matriculas = [], setOpenModal}) {
                                         </td>
                                         <td className="px-4 py-3 text-sm">
                                             <button
-                                            onClick={()=> setOpenModal(true) }
+                                            onClick={()=> {
+                                                setOpenModal(true)
+                                                setseledtMatricula(matricula)
+                                            } }
                                             className="text-blue-600 rounded  font-semibold bg-blue-200  hover:bg-blue-300 px-3 py-1">
                                                 Ver Detalles
                                             </button>
