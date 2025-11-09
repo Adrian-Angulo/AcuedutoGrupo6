@@ -28,12 +28,13 @@ Le enviamos su factura de acueducto correspondiente al periodo ${factura.periodo
 📋 *Detalles de la Factura:*
 • Factura #: ${factura.id}
 • Matrícula: ${factura.cod_matricula}
+•  Nombre completo: ${nombrePropietario}
 • Periodo: ${factura.periodo_facturacion || '-'}
 • Valor: ${formatearMoneda(factura.valor)}
 • Fecha de vencimiento: ${formatearFecha(factura.fecha_vencimiento)}
 • Estado: ${factura.estado}
 
-${factura.url ? '📄 *El PDF de su factura se abrirá automáticamente para que pueda adjuntarlo a este chat.*' : '📄 *El PDF de la factura será enviado por separado.*'}
+📄 *Descargue su factura aquí:* https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf
 
 Por favor, realice el pago antes de la fecha de vencimiento para evitar cargos adicionales.
 
