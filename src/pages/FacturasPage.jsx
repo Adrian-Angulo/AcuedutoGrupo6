@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { api } from '../services/api';
 import { Search } from "lucide-react";
+import CompartirFacturaWhatsApp from './CompartirFacturaWhatsApp.jsx';
 
 export default function FacturasPage() {
   const [facturas, setFacturas] = useState([]);
@@ -478,6 +479,7 @@ export default function FacturasPage() {
                                   >
                                     💰
                                   </button>
+
                                 )}
                                 <button
                                   onClick={() => verFacturasPorMatricula(factura.cod_matricula)}
@@ -495,8 +497,9 @@ export default function FacturasPage() {
                                     title="Ver PDF"
                                   >
                                     📄
-                                  </a>
+                                  </a>  
                                 )}
+                                <CompartirFacturaWhatsApp factura={factura} />
                               </div>
                             </td>
                           </tr>
