@@ -26,7 +26,7 @@ export default function MatriculasPage() {
     try {
       setLoading(true)
       setError('');
-      if(!navigator.onLine){
+      if (!navigator.onLine) {
         throw new Error('offline');
       }
       const datos = await getMatriculas();
@@ -43,7 +43,7 @@ export default function MatriculasPage() {
     }
   };
 
-  
+
   useEffect(() => {
     cargar();
   }, []);
@@ -52,23 +52,22 @@ export default function MatriculasPage() {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-      <HeaderPage titulo="Matriculas" />
+      <HeaderPage titulo="Matriculas Modulo" />
       <Card >
         {/* <Button description="Agregar Matricula" onClick={() => alert('Botón clickeado!')} /> */}
-        
         <Buscador placeholder="Buscar matrícula..." onChange={(e) => setCriterio(e.target.value)} />
       </Card>
-      
 
-       {/* 🔄 Spinner mientras carga */}
+
+      {/* 🔄 Spinner mientras carga */}
       {
         loading && (
           <div className="p-6 bg-gray-50 min-h-screen flex  justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Cargando Matriculas...</p>
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+              <p className="mt-4 text-gray-600">Cargando Matriculas...</p>
+            </div>
           </div>
-        </div>
         )
       }
 
@@ -79,8 +78,8 @@ export default function MatriculasPage() {
         </div>
       )}
 
-      {!loading && !error && ( <Table matriculas={listaFiltrada(criterio, listaMatriculas)}  setOpenModal={setOpenModal} setseledtMatricula={setseledtMatricula}  />)}
-      <ModalComponent openModal={openModal} setOpenModal={setOpenModal} matricula={seledtMatricula}/>
+      {!loading && !error && (<Table matriculas={listaFiltrada(criterio, listaMatriculas)} setOpenModal={setOpenModal} setseledtMatricula={setseledtMatricula} />)}
+      <ModalComponent openModal={openModal} setOpenModal={setOpenModal} matricula={seledtMatricula} />
     </div>
   );
 }
