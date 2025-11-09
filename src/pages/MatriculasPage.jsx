@@ -54,8 +54,9 @@ export default function MatriculasPage() {
     <div className="p-6 bg-gray-50 min-h-screen">
       <HeaderPage titulo="Matriculas Modulo" />
       <Card >
-        {/* <Button description="Agregar Matricula" onClick={() => alert('Botón clickeado!')} /> */}
-        <Buscador placeholder="Buscar matrícula..." onChange={(e) => setCriterio(e.target.value)} />
+
+        <Button>Agregar Matrícula</Button>
+        <Buscador placeholder="Buscar Ej. MAT-2025-0001 o 1234567890" onChange={(e) => setCriterio(e.target.value)} />
       </Card>
 
 
