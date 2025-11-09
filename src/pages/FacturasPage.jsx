@@ -15,6 +15,7 @@ export default function FacturasPage() {
   const [guardando, setGuardando] = useState(false);
   const [matriculas, setMatriculas] = useState([]);
   const [busqueda, setBusqueda] = useState('');
+  const [errorBusqueda, setErrorBusqueda] = useState('');
 
   // Formulario de nueva factura individual
   const [formNueva, setFormNueva] = useState({
@@ -59,12 +60,12 @@ export default function FacturasPage() {
     }
   };
 
-  const listaBusqueda = facturas.filter((f) => {
+  const listaBusqueda = errorBusqueda ? [] : facturas.filter((f) => {
     const termino = busqueda.toLowerCase().trim();
-    if (!termino) return facturas; // Si no hay búsqueda, mostrar todo
+    if (!termino) return true; // Si no hay búsqueda, mostrar todo
 
     return (
-      f.cod_matricula.toLowerCase().includes(termino) 
+      f.cod_matricula?.toLowerCase().includes(termino) || (f.matricula.predio?.propietario?.cc && f.matricula.predio.propietario.cc.toLowerCase().includes(termino))
     );
   });
 
@@ -336,23 +337,48 @@ export default function FacturasPage() {
             Ver Todas las Facturas
           </button>
 
-          <div className='flex w-1/3 ml-auto h-12  text-sm text-gray-700 border border-blue-300 rounded-lg shadow-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition'>
-            <div
-              className=" text-blue-700 px-3 py-3 rounded text-sm transition"
-              
-             > 
+          <div className='flex w-1/3 ml-auto flex-col'>
+            <div className='flex h-12  text-sm text-gray-700 border border-blue-300 rounded-lg shadow-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition'>
+            <div className=" text-blue-700 px-3 py-3 rounded text-sm transition"> 
              <Search />
             </div>
             <input
               className='w-full pl-2 h-12 text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none  transition'
               type="text"
-              onChange={(e) => setBusqueda(e.target.value)}
-              placeholder="Buscar Ej. M001"
-
+              value={busqueda}
+              onChange={(e) => {
+                const valor = e.target.value;
+                setBusqueda(valor);
+                
+                //validación cedula 10 digitos
+                if(/^\d+$/.test(valor)){
+                  if (valor.length !==10 && valor.length > 0) {
+                    setErrorBusqueda("La cédula debe tener 10 dígitos");
+                  } else {
+                    setErrorBusqueda("");
+                  }
+                }
+                //validación formato matricula MAT-XXXX-XXXX
+                else if (valor.length > 0 ){
+                  const formatoMatricula = /^MAT-[A-Z0-9]{4}-[A-Z0-9]{4}$/i;
+                  if (!formatoMatricula.test(valor)) {
+                    setErrorBusqueda("Formato de matrícula inválido. Use MAT-XXXX-XXXX");
+                } else {
+                  setErrorBusqueda("");
+                }
+                } else {
+                  setErrorBusqueda("");
+                }
+              }}
+              placeholder="Buscar por matrícula o cédula del propietario"
             />
           </div>
-
-
+          { errorBusqueda && (
+            <div className="mt-1 text-red-600 text-xs bg-red-50 border border-red-200 rounded px-3 py-1">
+              {errorBusqueda}
+        </div>
+          )}
+      </div>
         </div>
       </div>
 
