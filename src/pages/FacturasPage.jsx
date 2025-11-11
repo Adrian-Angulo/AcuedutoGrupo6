@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { api } from '../services/api';
 import { Search, RefreshCw, Eye, Download, DollarSign, FileText } from "lucide-react";
 import { listaFiltradaFactura } from '../components/ComponetesGrupo6/lib/formatters';
+import Swal from 'sweetalert2';
+
 export default function FacturasPage() {
   const [facturas, setFacturas] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -437,14 +439,29 @@ export default function FacturasPage() {
                         </button>
                         {factura.url && (
                           <a
-                            href={factura.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-2 text-gray-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-all duration-200"
-                            title="Descargar PDF"
-                          >
-                            <Download className="w-4 h-4" />
-                          </a>
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="p-2 text-gray-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-all duration-200"
+                              title="Descargar PDF"
+                              onClick={() => {
+                                const Toast = Swal.mixin({
+                                  toast: true,
+                                  position: 'bottom-end',
+                                  showConfirmButton: false,
+                                  timer: 2000,
+                                  timerProgressBar: true,
+                                  iconColor: '#16a34a',
+                                  background: '#fff',
+                                });
+
+                                Toast.fire({
+                                  icon: 'success',
+                                  title: 'PDF descargado exitosamente',
+                                });
+                              }}
+                            >
+                              <Download className="w-4 h-4" />
+                            </a>
                         )}
                       </div>
                     </td>
