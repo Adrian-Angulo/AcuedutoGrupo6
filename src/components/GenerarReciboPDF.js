@@ -4,26 +4,53 @@ import { formatCurrency, formatDate } from './ComponetesGrupo6/lib/formatters';
 
 export const generarReciboPDF = async (factura) => {
   try {
-    // Intentar obtener todas las facturas de la misma matrícula
-    let facturasParaPDF = factura;
-    if (factura && factura.cod_matricula) {
+    // Primero, obtener la factura completa con todas sus relaciones
+    let facturaCompleta = factura;
+    try {
+      const single = await api.get(`/facturas/${factura.id}`);
+      if (single) {
+        facturaCompleta = single;
+      }
+    } catch (err) {
+      console.warn('No se pudo obtener factura completa por id, usando datos locales', err.message || err);
+    }
+
+    // Si la factura no tiene los datos de matrícula/predio/propietario, intentar obtenerlos
+    if (facturaCompleta.cod_matricula && !facturaCompleta.matricula?.predio?.propietario) {
       try {
-        const data = await api.get(`/facturas/matricula/${factura.cod_matricula}`);
+        const matriculaData = await api.get(`/matriculas/${facturaCompleta.cod_matricula}`);
+        if (matriculaData) {
+          facturaCompleta.matricula = matriculaData;
+        }
+      } catch (err) {
+        console.warn('No se pudo obtener datos de matrícula', err.message || err);
+      }
+    }
+
+    // Intentar obtener todas las facturas de la misma matrícula
+    let facturasParaPDF = [facturaCompleta];
+    if (facturaCompleta && facturaCompleta.cod_matricula) {
+      try {
+        const data = await api.get(`/facturas/matricula/${facturaCompleta.cod_matricula}`);
         // `api.get` devuelve JSON directo (fetch wrapper), asumimos que `data` es un array
         if (Array.isArray(data) && data.length > 0) {
+          // Enriquecer cada factura con datos de matrícula si no los tiene
+          for (let i = 0; i < data.length; i++) {
+            if (!data[i].matricula?.predio?.propietario && data[i].cod_matricula) {
+              try {
+                const matriculaData = await api.get(`/matriculas/${data[i].cod_matricula}`);
+                if (matriculaData) {
+                  data[i].matricula = matriculaData;
+                }
+              } catch (err) {
+                console.warn(`No se pudo obtener datos de matrícula ${data[i].cod_matricula}`, err.message || err);
+              }
+            }
+          }
           facturasParaPDF = data;
         }
       } catch (err) {
         console.warn('No se pudo obtener facturas por matrícula, se generará solo la factura actual', err.message || err);
-        facturasParaPDF = [factura];
-      }
-    } else {
-      // Si no hay cod_matricula, intentar obtener la factura completa por id
-      try {
-        const single = await api.get(`/facturas/${factura.id}`);
-        facturasParaPDF = single ? [single] : [factura];
-      } catch (err) {
-        console.warn('No se pudo obtener factura por id, usando datos locales', err.message || err);
       }
     }
 
@@ -33,6 +60,15 @@ export const generarReciboPDF = async (factura) => {
 
     // Función que dibuja una factura en la página actual
     const drawFactura = (facturaItem) => {
+      // Debug: ver qué datos tenemos disponibles
+      console.log('Datos de factura para PDF:', {
+        id: facturaItem.id,
+        cod_matricula: facturaItem.cod_matricula,
+        matricula: facturaItem.matricula,
+        predio: facturaItem.matricula?.predio,
+        propietario: facturaItem.matricula?.predio?.propietario
+      });
+      
       let y = 40;
       doc.setFontSize(18);
       doc.setFont('helvetica', 'bold');
@@ -53,11 +89,23 @@ export const generarReciboPDF = async (factura) => {
       doc.text(`Estado: ${facturaItem.estado}`, left, y + 42);
 
       const rightX = pageWidth - left - 240;
-      const propietarioNombre = facturaItem?.matricula?.predio?.propietario.nombre
-        ? `${facturaItem.matricula.predio.propietario.nombre || 'N/A'} ${facturaItem.matricula.predio.propietario.apellido || 'N/A'}`.trim()
-        : '-';
-      const propietarioCC = facturaItem?.matricula?.predio?.propietario?.cc || '-';
-      const direccion = facturaItem?.matricula?.predio?.direccion || '-';
+      
+      // Extraer datos del propietario de forma segura
+      const matricula = facturaItem?.matricula;
+      const predio = matricula?.predio;
+      const propietario = predio?.propietario;
+      
+      let propietarioNombre = '-';
+      if (propietario) {
+        const nombre = propietario.nombre || '';
+        const apellido = propietario.apellido || '';
+        if (nombre || apellido) {
+          propietarioNombre = `${nombre} ${apellido}`.trim();
+        }
+      }
+      
+      const propietarioCC = propietario?.cc || '-';
+      const direccion = predio?.direccion || '-';
 
       doc.text(`Matrícula: ${facturaItem.cod_matricula || '-'}`, rightX, y);
       doc.text(`Propietario: ${propietarioNombre}`, rightX, y + 14);
