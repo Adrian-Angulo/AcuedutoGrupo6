@@ -351,8 +351,7 @@ export default function FacturasPage() {
           <BusquedaFacturas
             busqueda={busqueda}
             setBusqueda={setBusqueda}
-            errorBusqueda={errorBusqueda}
-            setErrorBusqueda={setErrorBusqueda}
+            
           />
         </div>
       </div>
