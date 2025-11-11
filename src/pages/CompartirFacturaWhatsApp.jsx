@@ -1,4 +1,3 @@
-
 import { Share2 } from 'lucide-react';
 
 export default function CompartirFacturaWhatsApp({ factura }) {
@@ -21,6 +20,28 @@ export default function CompartirFacturaWhatsApp({ factura }) {
       ? `${propietario.nombre} ${propietario.apellido}` 
       : 'Estimado(a) propietario(a)';
 
+    const estado = factura.estado?.toLowerCase() || '';
+    
+    let mensajeEstado = '';
+    let emoji = '';
+    
+    if (estado.includes('pagad')) {
+      emoji = '✅';
+      mensajeEstado = `${emoji} *¡Gracias! Su factura ya está pagada.*
+
+Agradecemos su puntualidad en el pago.`;
+    } else if (estado.includes('mora')) {
+      emoji = '⚠️';
+      mensajeEstado = `${emoji} *Su factura ya pasó la fecha de vencimiento.*
+
+Por favor, comuníquese con la entidad a la brevedad posible para regularizar su situación.`;
+    } else {
+      emoji = '⏳';
+      mensajeEstado = `${emoji} *Su factura se encuentra pendiente de pago.*
+
+Por favor, realice el pago antes de la fecha de vencimiento para evitar cargos adicionales.`;
+    }
+
     const mensaje = `Hola ${nombrePropietario},
 
 Le enviamos su factura de acueducto correspondiente al periodo ${factura.periodo_facturacion || 'actual'}.
@@ -28,15 +49,14 @@ Le enviamos su factura de acueducto correspondiente al periodo ${factura.periodo
 📋 *Detalles de la Factura:*
 • Factura #: ${factura.id}
 • Matrícula: ${factura.cod_matricula}
-•  Nombre completo: ${nombrePropietario}
 • Periodo: ${factura.periodo_facturacion || '-'}
 • Valor: ${formatearMoneda(factura.valor)}
 • Fecha de vencimiento: ${formatearFecha(factura.fecha_vencimiento)}
 • Estado: ${factura.estado}
 
-📄 *Descargue su factura aquí:* https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf
+${mensajeEstado}
 
-Por favor, realice el pago antes de la fecha de vencimiento para evitar cargos adicionales.
+${factura.url ? '📄 *El PDF de su factura se abrirá automáticamente para que pueda adjuntarlo a este chat.*' : '📄 *El PDF de la factura será enviado por separado.*'}
 
 Si tiene alguna pregunta, no dude en contactarnos.
 
