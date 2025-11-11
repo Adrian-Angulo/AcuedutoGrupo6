@@ -358,6 +358,8 @@ export default function FacturasPage() {
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Matrícula</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cedula</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nombre</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Periodo</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                     <button
@@ -384,6 +386,13 @@ export default function FacturasPage() {
                     <td className="px-4 py-3 text-sm font-medium text-blue-600">
                       {factura.cod_matricula}
                     </td>
+                    <td className="px-4 py-3 text-sm ">
+                      {factura.matricula?.predio?.propietario?.cc}
+                    </td>
+                    <td className="px-4 py-3 text-sm font-medium font-bold">
+                      {factura.matricula?.predio?.propietario?.nombre} {factura.matricula?.predio?.propietario?.apellido}
+                    </td>
+                    
                     <td className="px-4 py-3 text-sm text-gray-700">
                       {factura.periodo_facturacion || '-'}
                     </td>

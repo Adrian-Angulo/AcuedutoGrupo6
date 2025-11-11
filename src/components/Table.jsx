@@ -12,7 +12,7 @@ export default function Table({ matriculas = [], setOpenModal, setseledtMatricul
                     <table className="w-full">
                         <thead className="bg-gray-100 border-b border-gray-200">
                             <tr>
-                                {["ID", "CODIGO MATRICULA", "CEDULA", "PROPIETARIO", "PREDIO", "ESTADO", "ACCIONES"].map((title) => (
+                                {["ID", "CODIGO MATRICULA",  "NOMBRE","CEDULA", "PREDIO", "ESTADO", "ACCIONES"].map((title) => (
                                     <th
                                         key={title}
                                         className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
