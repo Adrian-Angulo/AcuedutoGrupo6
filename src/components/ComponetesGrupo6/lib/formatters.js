@@ -36,5 +36,10 @@ export const listaFiltrada = (criterio, listaMatriculas) =>
     matricula.predio?.propietario?.cc.toLowerCase().includes(criterio.toLowerCase())
   );
 
+  export const listaFiltradaFactura = (criterio, listaFacturas) =>
+     listaFacturas.filter((f) =>
+    f.cod_matricula.toLowerCase().includes(criterio.toLowerCase()) ||
+    f.matricula?.predio?.propietario?.cc.toLowerCase().includes(criterio.toLowerCase())
+  );
 
 
