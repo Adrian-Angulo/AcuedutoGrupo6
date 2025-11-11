@@ -4,6 +4,7 @@ import { Search, RefreshCw, Eye, Download, DollarSign, FileText } from "lucide-r
 import { listaFiltradaFactura } from '../components/ComponetesGrupo6/lib/formatters';
 import Swal from 'sweetalert2';
 import CompartirWhatsApp from '../components/ComponetesGrupo6/CompartirWhatsApp';
+import {generarReciboPDF} from '../components/GenerarReciboPDF';
 
 
 export default function FacturasPage() {
@@ -439,7 +440,7 @@ export default function FacturasPage() {
                         >
                           <FileText className="w-4 h-4" />
                         </button>
-                        {factura.url && (
+                        {
                           <a
                               target="_blank"
                               rel="noopener noreferrer"
@@ -447,7 +448,7 @@ export default function FacturasPage() {
                               title="Descargar PDF"
                               onClick={() => {
 
-                                // la descarga se maneja en el backend, solo mostramos el toast
+                                generarReciboPDF(factura);
                                 const Toast = Swal.mixin({
                                   toast: true,
                                   position: 'bottom-end',
@@ -466,7 +467,7 @@ export default function FacturasPage() {
                             >
                               <Download className="w-4 h-4" />
                             </a>
-                        )}
+                        }
                         <CompartirWhatsApp factura={factura} />
                       </div>
                     </td>
