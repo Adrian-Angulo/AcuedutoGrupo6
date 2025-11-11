@@ -446,6 +446,8 @@ export default function FacturasPage() {
                               className="p-2 text-gray-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-all duration-200"
                               title="Descargar PDF"
                               onClick={() => {
+
+                                // la descarga se maneja en el backend, solo mostramos el toast
                                 const Toast = Swal.mixin({
                                   toast: true,
                                   position: 'bottom-end',
