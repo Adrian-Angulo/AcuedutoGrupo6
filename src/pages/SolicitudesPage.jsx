@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useEffect, useState, useRef } from "react";
 import { Trash2, Search, ChevronDown, X } from "lucide-react";
 import {
@@ -29,110 +28,6 @@ export default function SolicitudesPage() {
     observaciones: "",
     prioridad: "Media",
   });
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
-    try {
-      setLoading(true);
-      const [solicitudesData, matriculasData, mantenimientosData] = await Promise.all([
-        getSolicitudes(),
-        getMatriculas(),
-        getMantenimientos(),
-      ]);
-      setSolicitudes(solicitudesData);
-      setMatriculas(matriculasData);
-      setMantenimientos(mantenimientosData);
-      setError(null);
-    } catch (err) {
-      setError("Error al cargar datos: " + err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await createSolicitud(formData);
-      await loadData();
-      resetForm();
-    } catch (err) {
-      setError("Error al crear solicitud: " + err.message);
-    }
-  };
-
-  const handleEstadoChange = async (id, nuevoEstado) => {
-    try {
-      await updateSolicitudEstado(id, nuevoEstado);
-      await loadData();
-    } catch (err) {
-      setError("Error al actualizar estado: " + err.message);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    if (!confirm("¿Está seguro de eliminar esta solicitud?")) return;
-    try {
-      await deleteSolicitud(id);
-      await loadData();
-    } catch (err) {
-      setError("Error al eliminar: " + err.message);
-    }
-  };
-
-  const resetForm = () => {
-    setFormData({
-      cod_matricula: "",
-      id_mantenimiento: "",
-      observaciones: "",
-      prioridad: "Media",
-    });
-    setShowForm(false);
-  };
-
-  const getEstadoBadge = (estado) => {
-    const badges = {
-      Pendiente: "bg-yellow-100 text-yellow-800",
-      "En Proceso": "bg-blue-100 text-blue-800",
-      Completado: "bg-green-100 text-green-800",
-      Cancelado: "bg-red-100 text-red-800",
-    };
-    return badges[estado] || "bg-gray-100 text-gray-800";
-  };
-
-  const getPrioridadBadge = (prioridad) => {
-    const badges = {
-      Baja: "bg-gray-100 text-gray-800",
-      Media: "bg-blue-100 text-blue-800",
-      Alta: "bg-orange-100 text-orange-800",
-      Urgente: "bg-red-100 text-red-800",
-    };
-    return badges[prioridad] || "bg-gray-100 text-gray-800";
-  };
-
-  if (loading) {
-    return (
-      <div className="p-6 bg-gray-50 min-h-screen">
-        <p className="text-gray-600">Cargando...</p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-blue-600">
-          Solicitudes de Mantenimiento
-        </h1>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition"
-        >
-          {showForm ? "Cancelar" : "Nueva Solicitud"}
-        </button>
   const [searchPredio, setSearchPredio] = useState("");
   const [showPredioDropdown, setShowPredioDropdown] = useState(false);
   const [showMatriculaDropdown, setShowMatriculaDropdown] = useState(false);
@@ -411,24 +306,24 @@ export default function SolicitudesPage() {
         {/* Sección 1: Propietarios con sus predios */}
         {activeTab === "propietarios" && (
         <div className="bg-white rounded-b-xl shadow-lg overflow-hidden border border-gray-200 border-t-0">
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-5">
+          <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
             <h2 className="text-xl font-bold text-white">Propietarios y Predios</h2>
             <p className="text-blue-100 text-sm mt-1">Selecciona un propietario para crear una solicitud</p>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gradient-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200">
+              <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th className="px-6 py-3.5 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Propietario</th>
-                  <th className="px-6 py-3.5 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Cédula</th>
-                  <th className="px-6 py-3.5 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Predio</th>
-                  <th className="px-6 py-3.5 text-right text-xs font-bold text-gray-700 uppercase tracking-wider">Acciones</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Propietario</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Cédula</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Predio</th>
+                  <th className="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Acciones</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-gray-200">
                 {filteredSolicitudes.length === 0 ? (
                   <tr>
-                    <td colSpan="4" className="px-6 py-16 text-center">
+                    <td colSpan="4" className="px-6 py-12 text-center">
                       <div className="flex flex-col items-center justify-center text-gray-500">
                         <Search size={48} className="mb-3 text-gray-300" />
                         <p className="text-lg font-medium">
@@ -444,35 +339,31 @@ export default function SolicitudesPage() {
                   filteredSolicitudes.map((s) => {
                     const propietario = s.predio?.propietario;
                     return (
-                      <tr key={s.id} className="hover:bg-blue-50/50 transition-all duration-150">
+                      <tr key={s.id} className="hover:bg-blue-50 transition-colors">
                         <td className="px-6 py-4">
-                          <div className="flex items-center gap-3">
-                            <div className="w-11 h-11 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-sm">
-                              <span className="text-white font-bold text-sm">
+                          <div className="flex items-center">
+                            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                              <span className="text-blue-600 font-semibold text-sm">
                                 {propietario ? `${propietario.nombre[0]}${propietario.apellido[0]}` : "?"}
                               </span>
                             </div>
                             <div>
-                              <p className="text-sm font-semibold text-gray-900">
+                              <p className="text-sm font-medium text-gray-900">
                                 {propietario ? `${propietario.nombre} ${propietario.apellido}` : "N/A"}
                               </p>
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4">
-                          <span className="text-sm font-medium text-gray-700">
-                            {propietario?.cc || "N/A"}
-                          </span>
+                        <td className="px-6 py-4 text-sm text-gray-700">
+                          {propietario?.cc || "N/A"}
                         </td>
-                        <td className="px-6 py-4">
-                          <span className="text-sm text-gray-700">
-                            {s.predio?.direccion || "N/A"}
-                          </span>
+                        <td className="px-6 py-4 text-sm text-gray-700">
+                          {s.predio?.direccion || "N/A"}
                         </td>
                         <td className="px-6 py-4 text-right">
                           <button
                             onClick={() => handleOpenFormWithPropietario(propietario?.cc)}
-                            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg transition-all duration-150 text-sm font-semibold shadow-sm hover:shadow-md transform hover:-translate-y-0.5"
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition text-sm font-medium shadow-sm hover:shadow-md"
                           >
                             Crear Solicitud
                           </button>
@@ -799,173 +690,6 @@ export default function SolicitudesPage() {
                 </div>
               </form>
 
-      {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
-          {error}
-        </div>
-      )}
-
-      {showForm && (
-        <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6 shadow-sm">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">
-            Nueva Solicitud de Mantenimiento
-          </h2>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-gray-700 mb-2">Matrícula *</label>
-              <select
-                value={formData.cod_matricula}
-                onChange={(e) =>
-                  setFormData({ ...formData, cod_matricula: e.target.value })
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              >
-                <option value="">Seleccione una matrícula</option>
-                {matriculas.map((m) => (
-                  <option key={m.cod_matricula} value={m.cod_matricula}>
-                    {m.cod_matricula} - {m.predio?.direccion || 'Sin predio'}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-gray-700 mb-2">
-                Tipo de Mantenimiento *
-              </label>
-              <select
-                value={formData.id_mantenimiento}
-                onChange={(e) =>
-                  setFormData({ ...formData, id_mantenimiento: e.target.value })
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              >
-                <option value="">Seleccione tipo de mantenimiento</option>
-                {mantenimientos.map((m) => (
-                  <option key={m.id} value={m.id}>
-                    {m.nombre}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-gray-700 mb-2">Prioridad</label>
-              <select
-                value={formData.prioridad}
-                onChange={(e) =>
-                  setFormData({ ...formData, prioridad: e.target.value })
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="Baja">Baja</option>
-                <option value="Media">Media</option>
-                <option value="Alta">Alta</option>
-                <option value="Urgente">Urgente</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-gray-700 mb-2">Observaciones</label>
-              <textarea
-                value={formData.observaciones}
-                onChange={(e) =>
-                  setFormData({ ...formData, observaciones: e.target.value })
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                rows="3"
-                placeholder="Describa el problema o solicitud..."
-              />
-            </div>
-
-            <div className="flex gap-2">
-              <button
-                type="submit"
-                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition"
-              >
-                Crear Solicitud
-              </button>
-              <button
-                type="button"
-                onClick={resetForm}
-                className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded transition"
-              >
-                Cancelar
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
-
-      <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="px-4 py-3 text-left text-gray-700">ID</th>
-              <th className="px-4 py-3 text-left text-gray-700">Matrícula</th>
-              <th className="px-4 py-3 text-left text-gray-700">Predio</th>
-              <th className="px-4 py-3 text-left text-gray-700">Tipo</th>
-              <th className="px-4 py-3 text-left text-gray-700">Prioridad</th>
-              <th className="px-4 py-3 text-left text-gray-700">Estado</th>
-              <th className="px-4 py-3 text-left text-gray-700">Observaciones</th>
-              <th className="px-4 py-3 text-left text-gray-700">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {solicitudes.length === 0 ? (
-              <tr>
-                <td colSpan="8" className="px-4 py-8 text-center text-gray-600">
-                  No hay solicitudes registradas
-                </td>
-              </tr>
-            ) : (
-              solicitudes.map((s) => (
-                <tr key={s.id} className="border-t border-gray-200 hover:bg-gray-50">
-                  <td className="px-4 py-3 text-gray-900">{s.id}</td>
-                  <td className="px-4 py-3 text-gray-900">
-                    {s.cod_matricula || "N/A"}
-                  </td>
-                  <td className="px-4 py-3 text-gray-900">
-                    {s.predio?.direccion || "N/A"}
-                  </td>
-                  <td className="px-4 py-3 text-gray-900">
-                    {s.mantenimiento?.nombre || "N/A"}
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className={`px-2 py-1 rounded text-xs ${getPrioridadBadge(s.prioridad)}`}>
-                      {s.prioridad}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <select
-                      value={s.estado}
-                      onChange={(e) => handleEstadoChange(s.id, e.target.value)}
-                      className={`px-2 py-1 rounded text-xs border-0 ${getEstadoBadge(s.estado)}`}
-                    >
-                      <option value="Pendiente">Pendiente</option>
-                      <option value="En Proceso">En Proceso</option>
-                      <option value="Completado">Completado</option>
-                      <option value="Cancelado">Cancelado</option>
-                    </select>
-                  </td>
-                  <td className="px-4 py-3 text-gray-600 max-w-xs truncate">
-                    {s.observaciones || "-"}
-                  </td>
-                  <td className="px-4 py-3">
-                    <button
-                      onClick={() => handleDelete(s.id)}
-                      className="text-red-600 hover:underline"
-                    >
-                      Eliminar
-                    </button>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
               {/* Sección de información del propietario */}
               <div className="w-80 bg-gray-50 p-6 overflow-y-auto">
                 <h3 className="text-sm font-semibold text-gray-700 mb-4">Información del Propietario</h3>
