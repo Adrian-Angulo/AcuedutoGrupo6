@@ -93,7 +93,7 @@ Gracias por su atención.`;
       title="Compartir por WhatsApp"
       aria-label="Compartir factura por WhatsApp"
     >
-      <Share2 size={16} />
+      <Share2 size={14} />
     </button>
   );
 }
