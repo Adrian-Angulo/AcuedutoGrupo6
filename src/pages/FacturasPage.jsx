@@ -3,6 +3,8 @@ import { api } from '../services/api';
 import { Search, RefreshCw, Eye, Download, DollarSign, FileText } from "lucide-react";
 import { listaFiltradaFactura } from '../components/ComponetesGrupo6/lib/formatters';
 import Swal from 'sweetalert2';
+import CompartirWhatsApp from '../components/ComponetesGrupo6/CompartirWhatsApp';
+
 
 export default function FacturasPage() {
   const [facturas, setFacturas] = useState([]);
@@ -463,6 +465,7 @@ export default function FacturasPage() {
                               <Download className="w-4 h-4" />
                             </a>
                         )}
+                        <CompartirWhatsApp factura={factura} />
                       </div>
                     </td>
                   </tr>
