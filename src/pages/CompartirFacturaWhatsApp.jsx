@@ -26,17 +26,17 @@ export default function CompartirFacturaWhatsApp({ factura }) {
     let emoji = '';
     
     if (estado.includes('pagad')) {
-      emoji = '✅';
+      emoji = '';
       mensajeEstado = `${emoji} *¡Gracias! Su factura ya está pagada.*
 
 Agradecemos su puntualidad en el pago.`;
     } else if (estado.includes('mora')) {
-      emoji = '⚠️';
+      emoji = '';
       mensajeEstado = `${emoji} *Su factura ya pasó la fecha de vencimiento.*
 
 Por favor, comuníquese con la entidad a la brevedad posible para regularizar su situación.`;
     } else {
-      emoji = '⏳';
+      emoji = '';
       mensajeEstado = `${emoji} *Su factura se encuentra pendiente de pago.*
 
 Por favor, realice el pago antes de la fecha de vencimiento para evitar cargos adicionales.`;
@@ -46,7 +46,7 @@ Por favor, realice el pago antes de la fecha de vencimiento para evitar cargos a
 
 Le enviamos su factura de acueducto correspondiente al periodo ${factura.periodo_facturacion || 'actual'}.
 
-📋 *Detalles de la Factura:*
+ *Detalles de la Factura:*
 • Factura #: ${factura.id}
 • Matrícula: ${factura.cod_matricula}
 • Periodo: ${factura.periodo_facturacion || '-'}
@@ -56,7 +56,7 @@ Le enviamos su factura de acueducto correspondiente al periodo ${factura.periodo
 
 ${mensajeEstado}
 
-${factura.url ? '📄 *El PDF de su factura se abrirá automáticamente para que pueda adjuntarlo a este chat.*' : '📄 *El PDF de la factura será enviado por separado.*'}
+${factura.url ? ' *El PDF de su factura se abrirá automáticamente para que pueda adjuntarlo a este chat.*' : '📄 *El PDF de la factura será enviado por separado.*'}
 
 Si tiene alguna pregunta, no dude en contactarnos.
 
