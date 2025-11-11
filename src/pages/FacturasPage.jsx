@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { api } from '../services/api';
 import { Search, RefreshCw, Eye, Download, DollarSign, FileText } from "lucide-react";
 import Swal from 'sweetalert2';
+import { listaFiltradaFactura } from '../components/ComponetesGrupo6/lib/formatters';
 
 
 export default function FacturasPage() {
@@ -18,6 +19,7 @@ export default function FacturasPage() {
   const [matriculas, setMatriculas] = useState([]);
   const [busquedaMatricula, setBusquedaMatricula] = useState('');
   const [busqueda, setBusqueda] = useState('');
+
   
 
   // Formulario de nueva factura individual
